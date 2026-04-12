@@ -12,7 +12,7 @@ export function buildCli(): Command {
   const program = new Command();
 
   program
-    .name('opencli')
+    .name('openaicli')
     .description('Universal AI coding CLI — works with any AI provider')
     .version(VERSION)
     // Global flags
@@ -57,7 +57,7 @@ export function buildCli(): Command {
         );
         process.stderr.write(
           theme.muted(
-            `Set it with: opencli config set apiKey YOUR_KEY\n` +
+            `Set it with: openaicli config set apiKey YOUR_KEY\n` +
             `Or set the environment variable for your provider.\n`,
           ),
         );
@@ -83,7 +83,7 @@ export function buildCli(): Command {
   // ── Config subcommand ─────────────────────────────────────────────────────
   const configCmd = program
     .command('config')
-    .description('Manage opencli configuration');
+    .description('Manage openaicli configuration');
 
   configCmd
     .command('list')
@@ -134,7 +134,7 @@ export function buildCli(): Command {
         );
       }
       process.stdout.write(
-        '\nConfigure: opencli config use <provider>\n',
+        '\nConfigure: openaicli config use <provider>\n',
       );
     });
 

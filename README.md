@@ -1,24 +1,24 @@
-# OpenCLI
+# OpenAICLI
 
 A universal AI coding CLI — configure any AI endpoint and work like Claude Code or Codex. Works with OpenAI, Anthropic, Gemini, Ollama, Groq, Mistral, and any custom endpoint.
 
 ## Installation
 
 ```bash
-npm install -g opencli
+npm install -g openaicli
 ```
 
 ## Quick Start
 
 1. **Configure your provider:**
 ```bash
-opencli config use openai  # or anthropic, gemini, ollama, etc.
-opencli config set apiKey YOUR_API_KEY
+openaicli config use openai  # or anthropic, gemini, ollama, etc.
+openaicli config set apiKey YOUR_API_KEY
 ```
 
 2. **Start coding:**
 ```bash
-opencli
+openaicli
 ```
 
 ## Supported Providers
@@ -35,22 +35,22 @@ opencli
 
 ### Interactive Mode
 ```bash
-opencli                    # Start interactive REPL
+openaicli                  # Start interactive REPL
 ```
 
 ### One-shot Mode
 ```bash
-opencli "your prompt here" # Single prompt, then exit
-opencli "your prompt" -o output.txt  # Save to file
+openaicli "your prompt here" # Single prompt, then exit
+openaicli "your prompt" -o output.txt  # Save to file
 ```
 
 ### Configuration
 ```bash
-opencli config list        # Show current config
-opencli config get <key>   # Get a config value
-opencli config set <key> <value>  # Set a config value
-opencli config use <provider>     # Switch provider
-opencli providers          # List available providers
+openaicli config list      # Show current config
+openaicli config get <key> # Get a config value
+openaicli config set <key> <value>  # Set a config value
+openaicli config use <provider>     # Switch provider
+openaicli providers        # List available providers
 ```
 
 ### REPL Commands
@@ -67,8 +67,8 @@ Once in interactive mode:
 
 ## Configuration Files
 
-- **Global:** `~/.opencli/config.json`
-- **Project:** `.opencli.json` (in your project root)
+- **Global:** `~/.openaicli/config.json`
+- **Project:** `.openaicli.json` (in your project root)
 
 ## Environment Variables
 
@@ -78,7 +78,7 @@ You can also set API keys via environment variables:
 - `GEMINI_API_KEY`
 - `GROQ_API_KEY`
 - `MISTRAL_API_KEY`
-- `OPENCLI_API_KEY` (for custom provider)
+- `OPENAICLI_API_KEY` (for custom provider)
 
 ## Features
 

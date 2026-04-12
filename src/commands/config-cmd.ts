@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { readGlobalConfig, writeGlobalConfig, setConfigValue } from '../config/manager.js';
-import { OpenCliConfigSchema, PROVIDERS } from '../config/types.js';
+import { OpenAiCliConfigSchema, PROVIDERS } from '../config/types.js';
 import { getPreset } from '../config/presets.js';
 import { theme } from '../ui/theme.js';
 
@@ -9,7 +9,7 @@ export async function configCommand(action: string, key?: string, value?: string
     case 'list':
     case 'show': {
       const config = readGlobalConfig();
-      process.stdout.write(chalk.bold('\nGlobal Configuration (~/.opencli/config.json):\n\n'));
+      process.stdout.write(chalk.bold('\nGlobal Configuration (~/.openaicli/config.json):\n\n'));
       if (Object.keys(config).length === 0) {
         process.stdout.write(theme.muted('  (no configuration set — using defaults)\n'));
       } else {
@@ -21,7 +21,7 @@ export async function configCommand(action: string, key?: string, value?: string
 
     case 'get': {
       if (!key) {
-        process.stderr.write(theme.error('Usage: opencli config get <key>\n'));
+        process.stderr.write(theme.error('Usage: openaicli config get <key>\n'));
         process.exit(1);
       }
       const config = readGlobalConfig();
@@ -36,7 +36,7 @@ export async function configCommand(action: string, key?: string, value?: string
 
     case 'set': {
       if (!key || value === undefined) {
-        process.stderr.write(theme.error('Usage: opencli config set <key> <value>\n'));
+        process.stderr.write(theme.error('Usage: openaicli config set <key> <value>\n'));
         process.exit(1);
       }
 
@@ -54,7 +54,7 @@ export async function configCommand(action: string, key?: string, value?: string
     case 'unset':
     case 'delete': {
       if (!key) {
-        process.stderr.write(theme.error('Usage: opencli config unset <key>\n'));
+        process.stderr.write(theme.error('Usage: openaicli config unset <key>\n'));
         process.exit(1);
       }
       const config = readGlobalConfig();
@@ -71,7 +71,7 @@ export async function configCommand(action: string, key?: string, value?: string
     }
 
     case 'use': {
-      // Shorthand: opencli config use anthropic
+      // Shorthand: openaicli config use anthropic
       const providerName = key;
       if (!providerName || !PROVIDERS.includes(providerName as typeof PROVIDERS[number])) {
         process.stderr.write(
@@ -90,14 +90,14 @@ export async function configCommand(action: string, key?: string, value?: string
         process.stdout.write(theme.muted(`  Endpoint: ${preset.endpoint}\n`));
       }
       process.stdout.write(
-        theme.muted(`  Set your API key: opencli config set apiKey YOUR_KEY\n`),
+        theme.muted(`  Set your API key: openaicli config set apiKey YOUR_KEY\n`),
       );
       break;
     }
 
     case 'validate': {
       const config = readGlobalConfig();
-      const result = OpenCliConfigSchema.safeParse(config);
+      const result = OpenAiCliConfigSchema.safeParse(config);
       if (result.success) {
         process.stdout.write(theme.success('Configuration is valid.\n'));
       } else {

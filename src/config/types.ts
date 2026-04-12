@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const PROVIDERS = ['openai', 'anthropic', 'gemini', 'ollama', 'groq', 'mistral', 'custom'] as const;
 export type Provider = (typeof PROVIDERS)[number];
 
-export const OpenCliConfigSchema = z.object({
+export const OpenAiCliConfigSchema = z.object({
   provider: z.enum(PROVIDERS).default('openai'),
   endpoint: z.string().optional(),
   apiKey: z.string().optional(),
@@ -19,13 +19,13 @@ export const OpenCliConfigSchema = z.object({
   contextLines: z.number().int().min(0).max(20).default(3),
 });
 
-export type OpenCliConfig = z.infer<typeof OpenCliConfigSchema>;
+export type OpenAiCliConfig = z.infer<typeof OpenAiCliConfigSchema>;
 
 // Resolved config always has full defaults applied
-export type ResolvedConfig = Required<OpenCliConfig> & {
+export type ResolvedConfig = Required<OpenAiCliConfig> & {
   endpoint: string | undefined;
   apiKey: string | undefined;
   systemPrompt: string | undefined;
 };
 
-export interface StoredConfig extends Partial<OpenCliConfig> {}
+export interface StoredConfig extends Partial<OpenAiCliConfig> {}

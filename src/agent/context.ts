@@ -3,7 +3,7 @@ import { readdirSync, statSync, existsSync } from 'fs';
 import { join, relative } from 'path';
 import type { ResolvedConfig } from '../config/types.js';
 
-const BASE_SYSTEM_PROMPT = `You are OpenCLI, an expert AI coding assistant running in the terminal.
+const BASE_SYSTEM_PROMPT = `You are OpenAICLI, an expert AI coding assistant running in the terminal.
 
 You help users with software engineering tasks: writing code, debugging, refactoring, explaining code, running commands, managing files, and anything else they need in their project.
 
@@ -136,7 +136,7 @@ function walkDir(
 
   let entries: string[];
   try {
-    entries = readdirSync(dir).filter((e) => !e.startsWith('.') || e === '.opencli.json');
+    entries = readdirSync(dir).filter((e) => !e.startsWith('.') || e === '.openaicli.json');
   } catch {
     return;
   }
