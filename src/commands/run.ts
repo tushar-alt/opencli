@@ -17,7 +17,7 @@ export async function runOneShot(
 ): Promise<void> {
   if (!options.quiet) {
     process.stderr.write(
-      theme.muted(`[openaicli] ${config.provider}/${config.model}\n`),
+      theme.muted(`[anyopencli] ${config.provider}/${config.model}\n`),
     );
     process.stderr.write(theme.separator + '\n\n');
   }

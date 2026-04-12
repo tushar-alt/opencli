@@ -25,7 +25,7 @@ export const theme = {
   logo: chalk.cyan.bold,
 };
 
-export const OPENAICLI_LOGO = `
+export const ANYOPENCLI_LOGO = `
    ____                   __   ________    _  __
   / __ \____  ___  ____  / /  / ____/ /   | |/ /
  / / / / __ \/ _ \/ __ \/ /  / /   / /    |   /

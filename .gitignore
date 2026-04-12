@@ -7,7 +7,7 @@ dist/
 *.tsbuildinfo
 
 # Config files (local)
-.openaicli.json
+.anyopencli.json
 
 # IDE
 .vscode/

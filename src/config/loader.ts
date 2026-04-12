@@ -1,4 +1,4 @@
-import { OpenAiCliConfigSchema, type ResolvedConfig, type StoredConfig } from './types.js';
+import { AnyOpenCliConfigSchema, type ResolvedConfig, type StoredConfig } from './types.js';
 import { readGlobalConfig, readProjectConfig } from './manager.js';
 import { getPreset } from './presets.js';
 
@@ -48,7 +48,7 @@ export function loadConfig(cwd: string, flags: CliFlags = {}): ResolvedConfig {
     if (envKey) merged.apiKey = envKey;
   }
 
-  const parsed = OpenAiCliConfigSchema.parse(merged);
+  const parsed = AnyOpenCliConfigSchema.parse(merged);
 
   return {
     ...parsed,
@@ -66,7 +66,7 @@ function getEnvKey(provider: string): string | undefined {
     groq: 'GROQ_API_KEY',
     mistral: 'MISTRAL_API_KEY',
     ollama: '',
-    custom: 'OPENAICLI_API_KEY',
+    custom: 'ANYOPENCLI_API_KEY',
   };
   const envVar = envMap[provider];
   if (!envVar) return undefined;

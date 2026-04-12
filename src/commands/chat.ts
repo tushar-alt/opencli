@@ -3,13 +3,13 @@ import type { ResolvedConfig } from '../config/types.js';
 import { ConversationHistory } from '../agent/history.js';
 import { buildSystemPrompt } from '../agent/context.js';
 import { runAgentLoop } from '../agent/loop.js';
-import { OpenAiCliRepl, printHelp } from '../ui/repl.js';
-import { theme, OPENAICLI_LOGO } from '../ui/theme.js';
+import { AnyOpenCliRepl, printHelp } from '../ui/repl.js';
+import { theme, ANYOPENCLI_LOGO } from '../ui/theme.js';
 import { loadConfig } from '../config/loader.js';
 
 export async function startChat(config: ResolvedConfig, cwd: string): Promise<void> {
   // Print welcome banner
-  process.stdout.write(chalk.cyan(OPENAICLI_LOGO) + '\n\n');
+  process.stdout.write(chalk.cyan(ANYOPENCLI_LOGO) + '\n\n');
   process.stdout.write(
     theme.muted(
       `Provider: ${config.provider} | Model: ${config.model}${config.thinkMode ? ' | Think: on' : ''}\n`,
@@ -24,11 +24,11 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
   // Mutable config for session overrides
   let sessionConfig = { ...config };
 
-  const repl = new OpenAiCliRepl({
+  const repl = new AnyOpenCliRepl({
     onInput: async (input) => {
       history.addUser(input);
 
-      process.stdout.write('\n' + theme.secondary('openaicli> ') + '\n\n');
+      process.stdout.write('\n' + theme.secondary('anyopencli> ') + '\n\n');
 
       try {
         const messages = history.getMessages();
@@ -77,7 +77,7 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
             process.stdout.write(theme.muted('No conversation history yet.\n'));
           } else {
             for (const msg of msgs) {
-              const prefix = msg.role === 'user' ? theme.prompt('you') : theme.secondary('openaicli');
+              const prefix = msg.role === 'user' ? theme.prompt('you') : theme.secondary('anyopencli');
               const preview =
                 msg.content.length > 100 ? msg.content.slice(0, 100) + '…' : msg.content;
               process.stdout.write(`${prefix}: ${preview}\n`);

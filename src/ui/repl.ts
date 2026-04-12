@@ -13,7 +13,7 @@ export interface ReplOptions {
   onExit: () => void;
 }
 
-export class OpenAiCliRepl {
+export class AnyOpenCliRepl {
   private rl: Interface;
   private multilineBuffer: string[] = [];
   private inMultiline = false;
@@ -134,10 +134,10 @@ export function printHelp(): void {
     ['/think', 'Toggle thinking mode'],
     ['/tools', 'List enabled tools'],
     ['/config', 'Show current configuration'],
-    ['/exit', 'Exit OpenAICLI'],
+    ['/exit', 'Exit AnyOpenCLI'],
   ];
 
-  process.stdout.write(chalk.bold.cyan('\nOpenAICLI Commands:\n'));
+  process.stdout.write(chalk.bold.cyan('\nAnyOpenCLI Commands:\n'));
   for (const [cmd, desc] of commands) {
     process.stdout.write(
       `  ${chalk.cyan(String(cmd).padEnd(20))} ${chalk.gray(String(desc))}\n`,

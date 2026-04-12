@@ -3,7 +3,7 @@ import { join } from 'path';
 import { homedir } from 'os';
 import type { StoredConfig } from './types.js';
 
-const CONFIG_DIR = join(homedir(), '.openaicli');
+const CONFIG_DIR = join(homedir(), '.anyopencli');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 const HISTORY_FILE = join(CONFIG_DIR, 'history');
 
@@ -49,7 +49,7 @@ export function getConfigValue(key: string): unknown {
 }
 
 export function readProjectConfig(cwd: string): StoredConfig {
-  const projectConfigFile = join(cwd, '.openaicli.json');
+  const projectConfigFile = join(cwd, '.anyopencli.json');
   if (!existsSync(projectConfigFile)) return {};
   try {
     const raw = readFileSync(projectConfigFile, 'utf-8');
