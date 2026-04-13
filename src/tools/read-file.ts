@@ -11,6 +11,10 @@ const MAX_FILE_SIZE = 200 * 1024; // 200KB
 const MAX_LINES = 500;
 
 export async function readFileTool(args: ReadFileArgs, cwd: string): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.path !== 'string') {
+    return `Error: read_file requires a "path" argument. Received: ${JSON.stringify(args)}`;
+  }
   const filePath = resolve(cwd, args.path);
 
   if (!existsSync(filePath)) {

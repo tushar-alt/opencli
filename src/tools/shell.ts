@@ -15,6 +15,10 @@ export async function shellTool(
   cwd: string,
   autoConfirm: boolean,
 ): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.command !== 'string') {
+    return `Error: shell requires a "command" argument. Received: ${JSON.stringify(args)}`;
+  }
   const workDir = args.cwd ? args.cwd : cwd;
   const timeout = args.timeout ?? 30_000;
 

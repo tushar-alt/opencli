@@ -9,6 +9,10 @@ export interface SearchFilesArgs {
 const MAX_RESULTS = 100;
 
 export async function searchFilesTool(args: SearchFilesArgs, cwd: string): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.pattern !== 'string') {
+    return `Error: search_files requires a "pattern" argument. Received: ${JSON.stringify(args)}`;
+  }
   const searchDir = args.cwd ? resolve(cwd, args.cwd) : cwd;
 
   try {

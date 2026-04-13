@@ -7,6 +7,13 @@ export interface WriteFileArgs {
 }
 
 export async function writeFileTool(args: WriteFileArgs, cwd: string): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.path !== 'string') {
+    return `Error: write_file requires a "path" argument. Received: ${JSON.stringify(args)}`;
+  }
+  if (typeof args.content !== 'string') {
+    return `Error: write_file requires a "content" argument. Received: ${JSON.stringify(args)}`;
+  }
   const filePath = resolve(cwd, args.path);
   const dir = dirname(filePath);
   const isNew = !existsSync(filePath);

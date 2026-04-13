@@ -8,6 +8,16 @@ export interface EditFileArgs {
 }
 
 export async function editFileTool(args: EditFileArgs, cwd: string): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.path !== 'string') {
+    return `Error: edit_file requires a "path" argument. Received: ${JSON.stringify(args)}`;
+  }
+  if (typeof args.old_string !== 'string') {
+    return `Error: edit_file requires an "old_string" argument. Received: ${JSON.stringify(args)}`;
+  }
+  if (typeof args.new_string !== 'string') {
+    return `Error: edit_file requires a "new_string" argument. Received: ${JSON.stringify(args)}`;
+  }
   const filePath = resolve(cwd, args.path);
 
   if (!existsSync(filePath)) {

@@ -11,6 +11,10 @@ export interface SearchContentArgs {
 const MAX_OUTPUT = 6 * 1024;
 
 export async function searchContentTool(args: SearchContentArgs, cwd: string): Promise<string> {
+  // Validate args - some models send malformed tool calls
+  if (!args || typeof args.pattern !== 'string') {
+    return `Error: search_content requires a "pattern" argument. Received: ${JSON.stringify(args)}`;
+  }
   const searchDir = args.cwd ? resolve(cwd, args.cwd) : cwd;
 
   try {
