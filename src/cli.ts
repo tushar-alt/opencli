@@ -125,8 +125,8 @@ export function buildCli(): Command {
   program
     .command('providers')
     .description('List available AI providers')
-    .action(() => {
-      const { PROVIDER_PRESETS } = require('./config/presets.js') as typeof import('./config/presets.js');
+    .action(async () => {
+      const { PROVIDER_PRESETS } = await import('./config/presets.js');
       process.stdout.write('\nAvailable providers:\n\n');
       for (const [name, preset] of Object.entries(PROVIDER_PRESETS)) {
         process.stdout.write(
