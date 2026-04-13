@@ -206,7 +206,14 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
               });
               process.stdout.write('\n');
 
-              const provider = await ask('Select provider', sessionConfig.provider);
+              const providerInput = await ask('Select provider (type name or number)', sessionConfig.provider);
+              
+              // Convert number input to provider name
+              let provider = providerInput;
+              const providerNum = parseInt(providerInput, 10);
+              if (!isNaN(providerNum) && providerNum >= 1 && providerNum <= providers.length) {
+                provider = providers[providerNum - 1] ?? providerInput;
+              }
               const model = await ask('Model name', sessionConfig.model);
               
               let endpoint = sessionConfig.endpoint;
