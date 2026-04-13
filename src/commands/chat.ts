@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { createInterface } from 'readline';
-import Enquirer from 'enquirer';
 import type { ResolvedConfig } from '../config/types.js';
 import { ConversationHistory } from '../agent/history.js';
 import { buildSystemPrompt } from '../agent/context.js';
@@ -129,83 +128,106 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
           return true;
 
         case 'auth': {
-          // Interactive auth dialog using enquirer
+          // Simple interactive auth setup
           repl.pause();
+          
+          const rl = createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          const ask = (question: string, defaultValue?: string): Promise<string> => {
+            return new Promise((resolve) => {
+              const def = defaultValue ? theme.muted(` (${defaultValue})`) : '';
+              rl.question(`${chalk.cyan('?')} ${question}${def}: `, (answer) => {
+                resolve(answer.trim() || defaultValue || '');
+              });
+            });
+          };
+
+          const askPassword = (question: string): Promise<string> => {
+            return new Promise((resolve) => {
+              process.stdout.write(`${chalk.cyan('?')} ${question}: `);
+              
+              // Hide input
+              const stdin = process.stdin;
+              const oldRawMode = stdin.isRaw;
+              if (stdin.isTTY) {
+                stdin.setRawMode(true);
+              }
+              
+              let password = '';
+              const onData = (data: Buffer) => {
+                const char = data.toString();
+                const code = char.charCodeAt(0);
+                
+                if (code === 13) { // Enter
+                  stdin.removeListener('data', onData);
+                  if (stdin.isTTY) {
+                    stdin.setRawMode(oldRawMode || false);
+                  }
+                  process.stdout.write('\n');
+                  resolve(password);
+                } else if (code === 3) { // Ctrl+C
+                  stdin.removeListener('data', onData);
+                  if (stdin.isTTY) {
+                    stdin.setRawMode(oldRawMode || false);
+                  }
+                  process.stdout.write('\n');
+                  resolve('');
+                } else if (code === 127) { // Backspace
+                  password = password.slice(0, -1);
+                  process.stdout.write('\b \b');
+                } else if (code >= 32 && code <= 126) {
+                  password += char;
+                  process.stdout.write('*');
+                }
+              };
+              
+              stdin.on('data', onData);
+            });
+          };
 
           (async () => {
             try {
-              const enquirer = new Enquirer();
+              process.stdout.write('\n' + chalk.bold('┌────────────────────────────────────────┐\n'));
+              process.stdout.write(chalk.bold('│     🔐 Authentication Setup            │\n'));
+              process.stdout.write(chalk.bold('└────────────────────────────────────────┘\n\n'));
 
-              // Provider selection
-              const providerResult = await enquirer.prompt({
-                type: 'select',
-                name: 'provider',
-                message: chalk.cyan('Select AI Provider:'),
-                choices: [
-                  { name: 'openai', message: 'OpenAI (GPT-4, GPT-3.5)', value: 'openai' },
-                  { name: 'anthropic', message: 'Anthropic (Claude)', value: 'anthropic' },
-                  { name: 'gemini', message: 'Google (Gemini)', value: 'gemini' },
-                  { name: 'groq', message: 'Groq (Fast, Cheap)', value: 'groq' },
-                  { name: 'mistral', message: 'Mistral', value: 'mistral' },
-                  { name: 'ollama', message: 'Ollama (Local)', value: 'ollama' },
-                  { name: 'custom', message: 'Custom Endpoint', value: 'custom' },
-                ],
-                initial: sessionConfig.provider,
-              } as any);
-              const provider = (providerResult as { provider: string }).provider;
+              // Show provider options
+              process.stdout.write(chalk.bold('Available providers:\n'));
+              const providers = ['openai', 'anthropic', 'gemini', 'groq', 'mistral', 'ollama', 'custom'];
+              providers.forEach((p, i) => {
+                process.stdout.write(`  ${i + 1}. ${p}\n`);
+              });
+              process.stdout.write('\n');
 
-              // Model name input
-              const modelResult = await enquirer.prompt({
-                type: 'input',
-                name: 'model',
-                message: chalk.cyan('Model Name:'),
-                initial: sessionConfig.model,
-              } as any);
-              const model = (modelResult as { model: string }).model;
-
-              // Endpoint URL (only for custom)
+              const provider = await ask('Select provider', sessionConfig.provider);
+              const model = await ask('Model name', sessionConfig.model);
+              
               let endpoint = sessionConfig.endpoint;
               if (provider === 'custom') {
-                const epResult = await enquirer.prompt({
-                  type: 'input',
-                  name: 'ep',
-                  message: chalk.cyan('Endpoint URL:'),
-                  initial: sessionConfig.endpoint || 'https://api.example.com/v1',
-                } as any);
-                endpoint = (epResult as { ep: string }).ep;
+                endpoint = await ask('Endpoint URL', sessionConfig.endpoint || 'https://api.example.com/v1');
               }
+              
+              const apiKey = await askPassword('API Key');
 
-              // API Key (masked input)
-              const apiKeyResult = await enquirer.prompt({
-                type: 'password',
-                name: 'apiKey',
-                message: chalk.cyan('API Key:'),
-                mask: '*',
-              } as any);
-              const apiKey = (apiKeyResult as { apiKey: string }).apiKey;
-
-              // Confirm and save
+              // Show summary
               process.stdout.write('\n');
               process.stdout.write(chalk.bold('┌────────────────────────────────────────┐\n'));
               process.stdout.write(chalk.bold('│     🔐 Configuration Summary           │\n'));
               process.stdout.write(chalk.bold('├────────────────────────────────────────┤\n'));
-              process.stdout.write(`│ Provider: ${chalk.cyan(String(provider).padEnd(28))}│\n`);
-              process.stdout.write(`│ Model:    ${chalk.cyan(String(model).padEnd(28))}│\n`);
+              process.stdout.write(`│ Provider: ${chalk.cyan(provider.padEnd(28))}│\n`);
+              process.stdout.write(`│ Model:    ${chalk.cyan(model.padEnd(28))}│\n`);
               if (endpoint) {
-                process.stdout.write(`│ Endpoint: ${chalk.cyan(String(endpoint).padEnd(28))}│\n`);
+                process.stdout.write(`│ Endpoint: ${chalk.cyan(endpoint.padEnd(28))}│\n`);
               }
               process.stdout.write(`│ API Key:  ${chalk.cyan(apiKey ? '**********' : '(not set)').padEnd(28)}│\n`);
-              process.stdout.write(chalk.bold('└────────────────────────────────────────┘\n'));
+              process.stdout.write(chalk.bold('└────────────────────────────────────────┘\n\n'));
 
-              const confirmResult = await enquirer.prompt({
-                type: 'confirm',
-                name: 'confirm',
-                message: chalk.yellow('Save this configuration?'),
-                initial: true,
-              } as any);
-              const confirm = (confirmResult as { confirm: boolean }).confirm;
+              const confirm = await ask('Save this configuration? (y/n)', 'y');
 
-              if (confirm) {
+              if (confirm.toLowerCase() === 'y') {
                 // Update session config
                 sessionConfig = {
                   ...sessionConfig,
@@ -228,9 +250,10 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
               } else {
                 process.stdout.write('\n' + theme.muted('Configuration cancelled.\n\n'));
               }
-            } catch {
-              process.stdout.write('\n' + theme.muted('Authentication cancelled.\n\n'));
+            } catch (err) {
+              process.stdout.write('\n' + theme.error(`Error: ${String(err)}\n\n`));
             } finally {
+              rl.close();
               repl.resume();
             }
           })();
