@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { createInterface } from 'readline';
 import type { ResolvedConfig } from '../config/types.js';
 import { ConversationHistory } from '../agent/history.js';
 import { buildSystemPrompt } from '../agent/context.js';
@@ -125,6 +126,68 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
             theme.secondary(JSON.stringify(sessionConfig, null, 2) + '\n\n'),
           );
           return true;
+
+        case 'auth': {
+          // Interactive auth setup
+          process.stdout.write(chalk.bold.cyan('\n🔐 Authentication Setup\n'));
+          process.stdout.write(theme.muted('Press Enter to keep current values.\n\n'));
+          
+          const rl = createInterface({ input: process.stdin, output: process.stdout });
+          
+          // Helper to prompt
+          const prompt = (q: string, current: string): Promise<string> => {
+            return new Promise((resolve) => {
+              const hint = current ? theme.muted(` [${current}]`) : '';
+              process.stdout.write(`${q}${hint}: `);
+              rl.once('line', (line) => {
+                resolve(line.trim() || current);
+              });
+            });
+          };
+
+          // Run prompts sequentially
+          (async () => {
+            try {
+              const provider = await prompt('Provider (openai/anthropic/gemini/groq/mistral/ollama/custom)', sessionConfig.provider);
+              const endpoint = await prompt('Endpoint URL (leave empty for default)', sessionConfig.endpoint || '');
+              const model = await prompt('Model name', sessionConfig.model);
+              const apiKey = await prompt('API Key', sessionConfig.apiKey ? '***' : '');
+
+              // Update session config
+              sessionConfig = {
+                ...sessionConfig,
+                provider: provider as ResolvedConfig['provider'],
+                model,
+              };
+              if (endpoint) sessionConfig.endpoint = endpoint;
+              if (apiKey && apiKey !== '***') sessionConfig.apiKey = apiKey;
+
+              // Also save to global config
+              const { writeGlobalConfig } = await import('../config/manager.js');
+              writeGlobalConfig({
+                provider: sessionConfig.provider,
+                endpoint: sessionConfig.endpoint,
+                model: sessionConfig.model,
+                apiKey: sessionConfig.apiKey,
+              });
+
+              process.stdout.write('\n' + theme.success('✓ Authentication saved!\n'));
+              process.stdout.write(theme.info(`Provider: ${sessionConfig.provider}\n`));
+              process.stdout.write(theme.info(`Model: ${sessionConfig.model}\n`));
+              if (sessionConfig.endpoint) {
+                process.stdout.write(theme.info(`Endpoint: ${sessionConfig.endpoint}\n`));
+              }
+            } catch (err) {
+              process.stdout.write(theme.error(`Error: ${String(err)}\n`));
+            } finally {
+              rl.close();
+              repl.resume();
+            }
+          })();
+
+          repl.pause();
+          return true;
+        }
 
         default:
           return false;

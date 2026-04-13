@@ -127,6 +127,7 @@ export class AnyOpenCliRepl {
 export function printHelp(): void {
   const commands = [
     ['/help', 'Show this help'],
+    ['/auth', 'Interactive authentication setup (API key, endpoint, model)'],
     ['/clear', 'Clear conversation history'],
     ['/history', 'Show conversation turns'],
     ['/model <name>', 'Switch model for this session'],
