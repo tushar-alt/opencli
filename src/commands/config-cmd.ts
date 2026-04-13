@@ -9,7 +9,7 @@ export async function configCommand(action: string, key?: string, value?: string
     case 'list':
     case 'show': {
       const config = readGlobalConfig();
-      process.stdout.write(chalk.bold('\nGlobal Configuration (~/.anyopencli/config.json):\n\n'));
+      process.stdout.write(chalk.bold('\nGlobal Configuration (~/.species/config.json):\n\n'));
       if (Object.keys(config).length === 0) {
         process.stdout.write(theme.muted('  (no configuration set — using defaults)\n'));
       } else {
@@ -21,7 +21,7 @@ export async function configCommand(action: string, key?: string, value?: string
 
     case 'get': {
       if (!key) {
-        process.stderr.write(theme.error('Usage: anyopencli config get <key>\n'));
+        process.stderr.write(theme.error('Usage: species config get <key>\n'));
         process.exit(1);
       }
       const config = readGlobalConfig();
@@ -36,7 +36,7 @@ export async function configCommand(action: string, key?: string, value?: string
 
     case 'set': {
       if (!key || value === undefined) {
-        process.stderr.write(theme.error('Usage: anyopencli config set <key> <value>\n'));
+        process.stderr.write(theme.error('Usage: species config set <key> <value>\n'));
         process.exit(1);
       }
 
@@ -54,7 +54,7 @@ export async function configCommand(action: string, key?: string, value?: string
     case 'unset':
     case 'delete': {
       if (!key) {
-        process.stderr.write(theme.error('Usage: anyopencli config unset <key>\n'));
+        process.stderr.write(theme.error('Usage: species config unset <key>\n'));
         process.exit(1);
       }
       const config = readGlobalConfig();
@@ -71,7 +71,7 @@ export async function configCommand(action: string, key?: string, value?: string
     }
 
     case 'use': {
-      // Shorthand: anyopencli config use anthropic
+      // Shorthand: species config use anthropic
       const providerName = key;
       if (!providerName || !PROVIDERS.includes(providerName as typeof PROVIDERS[number])) {
         process.stderr.write(
@@ -90,7 +90,7 @@ export async function configCommand(action: string, key?: string, value?: string
         process.stdout.write(theme.muted(`  Endpoint: ${preset.endpoint}\n`));
       }
       process.stdout.write(
-        theme.muted(`  Set your API key: anyopencli config set apiKey YOUR_KEY\n`),
+        theme.muted(`  Set your API key: species config set apiKey YOUR_KEY\n`),
       );
       break;
     }

@@ -25,14 +25,17 @@ export const theme = {
   logo: chalk.cyan.bold,
 };
 
-export const ANYOPENCLI_LOGO = `
-${chalk.cyan('╔════════════════════════════════════════════════════════════════╗')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')(' █████╗ ')}${chalk.hex('#7B61FF')('███╗   ██╗')}${chalk.hex('#FF61DC')('██╗   ██╗')} ${chalk.hex('#00D4FF')('██████╗ ')}${chalk.hex('#7B61FF')('██████╗ ')}${chalk.hex('#FF61DC')('██╗')}     ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')('██╔══██╗')}${chalk.hex('#7B61FF')('████╗  ██║')}${chalk.hex('#FF61DC')('╚██╗ ██╔╝')}${chalk.hex('#00D4FF')('██╔═══██╗')}${chalk.hex('#7B61FF')('██╔══██╗')}${chalk.hex('#FF61DC')('██║')}     ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')('███████║')}${chalk.hex('#7B61FF')('██╔██╗ ██║')}${chalk.hex('#FF61DC')(' ╚████╔╝ ')}${chalk.hex('#00D4FF')('██║   ██║')}${chalk.hex('#7B61FF')('██████╔╝')}${chalk.hex('#FF61DC')('██║')}     ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')('██╔══██║')}${chalk.hex('#7B61FF')('██║╚██╗██║')}${chalk.hex('#FF61DC')('  ╚██╔╝  ')}${chalk.hex('#00D4FF')('██║   ██║')}${chalk.hex('#7B61FF')('██╔══██╗')}${chalk.hex('#FF61DC')('██║')}     ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')('██║  ██║')}${chalk.hex('#7B61FF')('██║ ╚████║')}${chalk.hex('#FF61DC')('   ██║   ')}${chalk.hex('#00D4FF')('╚██████╔╝')}${chalk.hex('#7B61FF')('██║  ██║')}${chalk.hex('#FF61DC')('███████╗')} ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.hex('#00D4FF')('╚═╝  ╚═╝')}${chalk.hex('#7B61FF')('╚═╝  ╚═══╝')}${chalk.hex('#FF61DC')('   ╚═╝   ')}${chalk.hex('#00D4FF')(' ╚═════╝ ')}${chalk.hex('#7B61FF')('╚═╝  ╚═╝')}${chalk.hex('#FF61DC')('╚══════╝')} ${chalk.cyan('  ║')}
-${chalk.cyan('║')}  ${chalk.white('               Universal AI Coding Assistant                ')} ${chalk.cyan('  ║')}
-${chalk.cyan('╚════════════════════════════════════════════════════════════════╝')}
+export const SPECIES_LOGO = `
+${chalk.cyan('╔══════════════════════════════════════════════════════════════════╗')}
+${chalk.cyan('║')}                                                                  ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('███████╗')}${chalk.hex('#7B61FF')('██████╗ ')}${chalk.hex('#FF61DC')('███████╗')}${chalk.hex('#00D4FF')('██╗   ██╗')}${chalk.hex('#7B61FF')('███████╗')} ${chalk.hex('#FF61DC')('██████╗ ')}${chalk.hex('#00D4FF')('███████╗')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('██╔════╝')}${chalk.hex('#7B61FF')('██╔══██╗')}${chalk.hex('#FF61DC')('██╔════╝')}${chalk.hex('#00D4FF')('██║   ██║')}${chalk.hex('#7B61FF')('██╔════╝')} ${chalk.hex('#FF61DC')('██╔══██╗')}${chalk.hex('#00D4FF')('██╔════╝')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('███████╗')}${chalk.hex('#7B61FF')('██████╔╝')}${chalk.hex('#FF61DC')('█████╗  ')}${chalk.hex('#00D4FF')('██║   ██║')}${chalk.hex('#7B61FF')('█████╗  ')} ${chalk.hex('#FF61DC')('██████╔╝')}${chalk.hex('#00D4FF')('███████╗')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('╚════██║')}${chalk.hex('#7B61FF')('██╔═══╝ ')}${chalk.hex('#FF61DC')('██╔══╝  ')}${chalk.hex('#00D4FF')('██║   ██║')}${chalk.hex('#7B61FF')('██╔══╝  ')} ${chalk.hex('#FF61DC')('██╔══██╗')}${chalk.hex('#00D4FF')('╚════██║')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('███████║')}${chalk.hex('#7B61FF')('██║    ')}${chalk.hex('#FF61DC')('███████╗')}${chalk.hex('#00D4FF')('╚██████╔╝')}${chalk.hex('#7B61FF')('███████╗')} ${chalk.hex('#FF61DC')('██║  ██║')}${chalk.hex('#00D4FF')('███████║')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}   ${chalk.hex('#00D4FF')('╚══════╝')}${chalk.hex('#7B61FF')('╚═╝    ')}${chalk.hex('#FF61DC')('╚══════╝')} ${chalk.hex('#00D4FF')('╚═════╝ ')}${chalk.hex('#7B61FF')('╚══════╝')} ${chalk.hex('#FF61DC')('╚═╝  ╚═╝')}${chalk.hex('#00D4FF')('╚══════╝')}   ${chalk.cyan('║')}
+${chalk.cyan('║')}                                                                  ${chalk.cyan('║')}
+${chalk.cyan('╠══════════════════════════════════════════════════════════════════╣')}
+${chalk.cyan('║')}     ${chalk.white('Universal AI Coding Assistant for Any Provider')}          ${chalk.cyan('║')}
+${chalk.cyan('╚══════════════════════════════════════════════════════════════════╝')}
 `.trim();

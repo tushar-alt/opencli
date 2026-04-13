@@ -4,13 +4,13 @@ import type { ResolvedConfig } from '../config/types.js';
 import { ConversationHistory } from '../agent/history.js';
 import { buildSystemPrompt } from '../agent/context.js';
 import { runAgentLoop } from '../agent/loop.js';
-import { AnyOpenCliRepl, printHelp } from '../ui/repl.js';
-import { theme, ANYOPENCLI_LOGO } from '../ui/theme.js';
+import { SpeciesRepl, printHelp } from '../ui/repl.js';
+import { theme, SPECIES_LOGO } from '../ui/theme.js';
 import { loadConfig } from '../config/loader.js';
 
 export async function startChat(config: ResolvedConfig, cwd: string): Promise<void> {
   // Print welcome banner
-  process.stdout.write(chalk.cyan(ANYOPENCLI_LOGO) + '\n\n');
+  process.stdout.write(chalk.cyan(SPECIES_LOGO) + '\n\n');
   process.stdout.write(
     theme.muted(
       `Provider: ${config.provider} | Model: ${config.model}${config.thinkMode ? ' | Think: on' : ''}\n`,
@@ -25,11 +25,11 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
   // Mutable config for session overrides
   let sessionConfig = { ...config };
 
-  const repl = new AnyOpenCliRepl({
+  const repl = new SpeciesRepl({
     onInput: async (input) => {
       history.addUser(input);
 
-      process.stdout.write('\n' + theme.secondary('anyopencli> ') + '\n\n');
+      process.stdout.write('\n' + theme.secondary('species> ') + '\n\n');
 
       try {
         const messages = history.getMessages();
@@ -78,7 +78,7 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
             process.stdout.write(theme.muted('No conversation history yet.\n'));
           } else {
             for (const msg of msgs) {
-              const prefix = msg.role === 'user' ? theme.prompt('you') : theme.secondary('anyopencli');
+              const prefix = msg.role === 'user' ? theme.prompt('you') : theme.secondary('species');
               const preview =
                 msg.content.length > 100 ? msg.content.slice(0, 100) + '…' : msg.content;
               process.stdout.write(`${prefix}: ${preview}\n`);

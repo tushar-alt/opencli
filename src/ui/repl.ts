@@ -26,7 +26,7 @@ export interface ReplOptions {
   onExit: () => void;
 }
 
-export class AnyOpenCliRepl {
+export class SpeciesRepl {
   private rl: Interface;
   private multilineBuffer: string[] = [];
   private inMultiline = false;
@@ -259,10 +259,10 @@ export function printHelp(): void {
     ['/think', 'Toggle thinking mode'],
     ['/tools', 'List enabled tools'],
     ['/config', 'Show configuration'],
-    ['/exit', 'Exit AnyOpenCLI'],
+    ['/exit', 'Exit Species'],
   ];
 
-  process.stdout.write(chalk.bold.cyan('\nAnyOpenCLI Commands:\n'));
+  process.stdout.write(chalk.bold.cyan('\nSpecies Commands:\n'));
   process.stdout.write(chalk.dim('Type / and press Enter for interactive menu\n\n'));
   for (const [cmd, desc] of commands) {
     process.stdout.write(

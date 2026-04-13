@@ -1,12 +1,12 @@
 {
-  "name": "anyopencli",
+  "name": "species",
   "version": "0.1.0",
   "description": "A universal AI coding CLI — configure any AI endpoint and work like Claude Code or Codex",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "anyopencli": "./dist/index.js"
+    "species": "./dist/index.js"
   },
   "files": [
     "dist/**/*",

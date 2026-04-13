@@ -1,24 +1,24 @@
-# AnyOpenCLI
+# Species
 
 A universal AI coding CLI — configure any AI endpoint and work like Claude Code or Codex. Works with OpenAI, Anthropic, Gemini, Ollama, Groq, Mistral, and any custom endpoint.
 
 ## Installation
 
 ```bash
-npm install -g anyopencli
+npm install -g species
 ```
 
 ## Quick Start
 
 1. **Configure your provider:**
 ```bash
-anyopencli config use openai  # or anthropic, gemini, ollama, etc.
-anyopencli config set apiKey YOUR_API_KEY
+species config use openai  # or anthropic, gemini, ollama, etc.
+species config set apiKey YOUR_API_KEY
 ```
 
 2. **Start coding:**
 ```bash
-anyopencli
+species
 ```
 
 ## Supported Providers
@@ -35,22 +35,22 @@ anyopencli
 
 ### Interactive Mode
 ```bash
-anyopencli                 # Start interactive REPL
+species                 # Start interactive REPL
 ```
 
 ### One-shot Mode
 ```bash
-anyopencli "your prompt here" # Single prompt, then exit
-anyopencli "your prompt" -o output.txt  # Save to file
+species "your prompt here" # Single prompt, then exit
+species "your prompt" -o output.txt  # Save to file
 ```
 
 ### Configuration
 ```bash
-anyopencli config list     # Show current config
-anyopencli config get <key> # Get a config value
-anyopencli config set <key> <value>  # Set a config value
-anyopencli config use <provider>     # Switch provider
-anyopencli providers       # List available providers
+species config list     # Show current config
+species config get <key> # Get a config value
+species config set <key> <value>  # Set a config value
+species config use <provider>     # Switch provider
+species providers       # List available providers
 ```
 
 ### REPL Commands
@@ -67,8 +67,8 @@ Once in interactive mode:
 
 ## Configuration Files
 
-- **Global:** `~/.anyopencli/config.json`
-- **Project:** `.anyopencli.json` (in your project root)
+- **Global:** `~/.species/config.json`
+- **Project:** `.species.json` (in your project root)
 
 ## Environment Variables
 
@@ -78,7 +78,7 @@ You can also set API keys via environment variables:
 - `GEMINI_API_KEY`
 - `GROQ_API_KEY`
 - `MISTRAL_API_KEY`
-- `ANYOPENCLI_API_KEY` (for custom provider)
+- `SPECIES_API_KEY` (for custom provider)
 
 ## Features
 

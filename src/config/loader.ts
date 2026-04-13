@@ -66,7 +66,7 @@ function getEnvKey(provider: string): string | undefined {
     groq: 'GROQ_API_KEY',
     mistral: 'MISTRAL_API_KEY',
     ollama: '',
-    custom: 'ANYOPENCLI_API_KEY',
+    custom: 'SPECIES_API_KEY',
   };
   const envVar = envMap[provider];
   if (!envVar) return undefined;
