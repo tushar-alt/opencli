@@ -127,6 +127,11 @@ export class StreamingRenderer {
 
 /** Print a tool call announcement */
 export function printToolCall(name: string, args: Record<string, unknown>): void {
+  // Skip showing tool calls with empty args (model sends partial calls first)
+  const hasValidArgs = Object.values(args).some(v => v !== undefined && v !== '');
+  if (!hasValidArgs && Object.keys(args).length === 0) {
+    return;
+  }
   const shortArgs = summarizeArgs(args);
   process.stdout.write(
     `\n${theme.toolName(`⚙ ${name}`)}${shortArgs ? theme.toolArg(` (${shortArgs})`) : ''}\n`,
@@ -135,6 +140,10 @@ export function printToolCall(name: string, args: Record<string, unknown>): void
 
 /** Print tool result */
 export function printToolResult(name: string, result: string): void {
+  // Skip showing validation errors from malformed tool calls (model sends empty args first)
+  if (result.includes('requires a') && result.includes('argument')) {
+    return;
+  }
   const preview = result.length > 200 ? result.slice(0, 200) + '…' : result;
   process.stdout.write(theme.muted(`  → ${preview}\n`));
 }
