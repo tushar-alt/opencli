@@ -25,9 +25,23 @@ marked.use(
   }),
 );
 
+export function stripHtml(html: string): string {
+  return html
+    .replace(/<p>/gi, '\n')
+    .replace(/<\/p>/gi, '')
+    .replace(/<pre><code>/gi, '\n```\n')
+    .replace(/<\/code><\/pre>/gi, '```\n')
+    .replace(/<code>/gi, '`')
+    .replace(/<\/code>/gi, '`')
+    .replace(/<[^>]+>/g, '')
+    .trim();
+}
+
 export function renderMarkdown(text: string): string {
   try {
-    const result = marked(text);
+    // Strip HTML tags first (some models return HTML)
+    const cleaned = stripHtml(text);
+    const result = marked(cleaned);
     return typeof result === 'string' ? result : text;
   } catch {
     return text;
@@ -49,7 +63,8 @@ export class StreamingRenderer {
   }
 
   pushText(delta: string): void {
-    this.buffer += delta;
+    // Strip HTML from delta immediately as it comes in
+    this.buffer += stripHtml(delta);
     this.flush(false);
   }
 
@@ -63,6 +78,11 @@ export class StreamingRenderer {
 
   /** Flush complete lines/blocks to stdout. If `final`, flush everything. */
   flush(final: boolean): void {
+    // If final, also strip any remaining HTML from the buffer
+    if (final && this.buffer) {
+      this.buffer = stripHtml(this.buffer);
+    }
+
     const lines = this.buffer.split('\n');
 
     // Keep the last incomplete line in the buffer (unless final)
