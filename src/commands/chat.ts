@@ -131,9 +131,9 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
           // Simple interactive auth setup
           repl.pause();
           
-          // Remove all existing listeners to prevent key duplication
+          // Store and remove only keypress listeners (not data listeners that readline needs)
+          const keypressListeners = process.stdin.listeners('keypress');
           process.stdin.removeAllListeners('keypress');
-          process.stdin.removeAllListeners('data');
           
           const rl = createInterface({
             input: process.stdin,
@@ -258,6 +258,10 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
               process.stdout.write('\n' + theme.error(`Error: ${String(err)}\n\n`));
             } finally {
               rl.close();
+              // Restore keypress listeners
+              keypressListeners.forEach((listener) => {
+                process.stdin.on('keypress', listener as (str: string, key: unknown) => void);
+              });
               repl.resume();
             }
           })();
