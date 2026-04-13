@@ -95,7 +95,7 @@ export class OpenAIAdapter implements ProviderAdapter {
           }
           const buf = toolBuffers.get(idx)!;
           if (tc.id) buf.id = tc.id;
-          if (tc.function?.name) buf.name += tc.function.name;
+          if (tc.function?.name) buf.name = tc.function.name;
           if (tc.function?.arguments) buf.argBuffer += tc.function.arguments;
         }
       }
