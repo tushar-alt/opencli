@@ -5,12 +5,35 @@ import chalk from 'chalk';
 import { theme } from './theme.js';
 import { getHistoryFile } from '../config/manager.js';
 
+const COMMANDS = [
+  '/help',
+  '/auth',
+  '/clear',
+  '/history',
+  '/model',
+  '/provider',
+  '/think',
+  '/tools',
+  '/config',
+  '/exit',
+];
+
 export type InputHandler = (input: string) => Promise<void>;
 
 export interface ReplOptions {
   onInput: InputHandler;
   onCommand: (cmd: string, args: string) => Promise<boolean>; // returns true if handled
   onExit: () => void;
+}
+
+// Tab completion function
+function completer(line: string): [string[], string] {
+  // If line starts with /, suggest commands
+  if (line.startsWith('/')) {
+    const hits = COMMANDS.filter((c) => c.startsWith(line));
+    return [hits, line];
+  }
+  return [[], line];
 }
 
 export class AnyOpenCliRepl {
@@ -33,6 +56,7 @@ export class AnyOpenCliRepl {
       output: process.stdout,
       terminal: true,
       historySize: 500,
+      completer,
     });
 
     // Enable history file persistence
@@ -63,6 +87,17 @@ export class AnyOpenCliRepl {
   }
 
   private async handleLine(line: string): Promise<void> {
+    // Show available commands when user types just "/"
+    if (line.trim() === '/') {
+      process.stdout.write('\n' + chalk.bold('Available commands:\n'));
+      for (const cmd of COMMANDS) {
+        process.stdout.write(`  ${chalk.cyan(cmd)}\n`);
+      }
+      process.stdout.write(chalk.dim('Press Tab to autocomplete\n\n'));
+      this.prompt();
+      return;
+    }
+
     // Multi-line continuation: line ends with backslash
     if (line.endsWith('\\')) {
       this.inMultiline = true;
