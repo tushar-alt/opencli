@@ -1,4 +1,4 @@
-import { createInterface, type Interface } from 'readline';
+import { createInterface, type Interface, emitKeypressEvents } from 'readline';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import chalk from 'chalk';
@@ -54,10 +54,36 @@ export class AnyOpenCliRepl {
     } catch {
       // ignore
     }
+
+    // Enable keypress events for detecting '/' immediately
+    emitKeypressEvents(process.stdin);
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
   }
 
   start(): void {
     this.prompt();
+    
+    // Listen for keypress to detect '/' and show menu immediately
+    process.stdin.on('keypress', (str: string, key: { name?: string; sequence?: string; ctrl?: boolean }) => {
+      // Skip if we're already in a menu or multiline mode
+      if (this.selectingCommand || this.inMultiline) return;
+      
+      // Check if user typed '/' and we're at an empty prompt
+      if (str === '/' && this.rl.line === '') {
+        // Clear the '/' that was printed and show menu
+        process.stdout.write('\b \b'); // Erase the '/' character
+        void this.showCommandMenu().then((selected) => {
+          if (selected) {
+            void this.executeCommand(selected, '');
+          } else {
+            this.prompt();
+          }
+        });
+      }
+    });
+    
     this.rl.on('line', (line) => void this.handleLine(line));
     this.rl.on('close', () => this.options.onExit());
     process.on('SIGINT', () => {
@@ -105,21 +131,14 @@ export class AnyOpenCliRepl {
 
     return new Promise((resolve) => {
       const stdin = process.stdin;
-      stdin.setRawMode(true);
-      stdin.resume();
-      stdin.setEncoding('utf8');
-
+      
       const cleanup = () => {
-        stdin.setRawMode(false);
-        stdin.pause();
-        stdin.removeAllListeners('data');
+        stdin.removeAllListeners('keypress');
       };
 
-      const onData = (key: string) => {
-        const byte = key.charCodeAt(0);
-
-        // Escape key or Ctrl+C
-        if (byte === 27 || byte === 3) {
+      const onKeypress = (str: string, key: { name?: string; sequence?: string; ctrl?: boolean }) => {
+        // Escape, Ctrl+C, or q to cancel
+        if (key.name === 'escape' || key.name === 'q' || (key.ctrl && key.name === 'c')) {
           cleanup();
           this.selectingCommand = false;
           process.stdout.write('\nCancelled\n\n');
@@ -128,8 +147,8 @@ export class AnyOpenCliRepl {
           return;
         }
 
-        // Enter key
-        if (byte === 13) {
+        // Enter to select
+        if (key.name === 'return' || key.name === 'enter') {
           cleanup();
           this.selectingCommand = false;
           process.stdout.write('\n');
@@ -138,20 +157,17 @@ export class AnyOpenCliRepl {
           return;
         }
 
-        // Arrow keys (escape sequences)
-        if (byte === 27 && key.length === 3) {
-          const direction = key.charCodeAt(2);
-          if (direction === 65) { // Up arrow
-            selectedIndex = (selectedIndex - 1 + COMMANDS.length) % COMMANDS.length;
-            renderMenu();
-          } else if (direction === 66) { // Down arrow
-            selectedIndex = (selectedIndex + 1) % COMMANDS.length;
-            renderMenu();
-          }
+        // Arrow keys
+        if (key.name === 'up') {
+          selectedIndex = (selectedIndex - 1 + COMMANDS.length) % COMMANDS.length;
+          renderMenu();
+        } else if (key.name === 'down') {
+          selectedIndex = (selectedIndex + 1) % COMMANDS.length;
+          renderMenu();
         }
       };
 
-      stdin.on('data', onData);
+      stdin.on('keypress', onKeypress);
     });
   }
 
