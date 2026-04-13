@@ -29,6 +29,13 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
     onInput: async (input) => {
       history.addUser(input);
 
+      // Check if API key is configured
+      if (!sessionConfig.apiKey && sessionConfig.provider !== 'ollama') {
+        process.stdout.write('\n' + theme.error('❌ No API key configured!\n'));
+        process.stdout.write(theme.muted('Run "/auth" to set up your API key.\n\n'));
+        return;
+      }
+
       process.stdout.write('\n' + theme.secondary('species> ') + '\n\n');
 
       try {

@@ -50,18 +50,16 @@ export function buildCli(): Command {
     try {
       const config = loadConfig(cwd, flags);
 
-      // Validate that we have a usable API key for providers that need one
-      if (config.provider !== 'ollama' && config.provider !== 'custom' && !config.apiKey) {
+      // Show warning if no API key, but don't exit - let user configure in interactive mode
+      if (config.provider !== 'ollama' && !config.apiKey) {
         process.stderr.write(
-          theme.warning(`No API key configured for provider "${config.provider}".\n`),
+          theme.warning(`⚠️  No API key configured for provider "${config.provider}".\n`),
         );
         process.stderr.write(
           theme.muted(
-            `Set it with: species config set apiKey YOUR_KEY\n` +
-            `Or set the environment variable for your provider.\n`,
+            `Run "/auth" in interactive mode to set up your API key.\n\n`,
           ),
         );
-        process.exit(1);
       }
 
       if (prompt) {
