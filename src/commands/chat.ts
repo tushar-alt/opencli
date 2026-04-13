@@ -131,6 +131,10 @@ export async function startChat(config: ResolvedConfig, cwd: string): Promise<vo
           // Simple interactive auth setup
           repl.pause();
           
+          // Remove all existing listeners to prevent key duplication
+          process.stdin.removeAllListeners('keypress');
+          process.stdin.removeAllListeners('data');
+          
           const rl = createInterface({
             input: process.stdin,
             output: process.stdout,
