@@ -4,6 +4,8 @@ import { createAdapter } from '../providers/factory.js';
 import { getEnabledDefinitions, dispatchTool } from '../tools/registry.js';
 import { StreamingRenderer, printToolCall, printToolResult } from '../ui/renderer.js';
 import { theme } from '../ui/theme.js';
+import ora from 'ora';
+import chalk from 'chalk';
 
 export interface RunResult {
   text: string;
@@ -35,11 +37,25 @@ export async function runAgentLoop(
     const pendingToolCalls: ToolCall[] = [];
     let assistantText = '';
     let stopReason = 'end_turn';
+    let hasReceivedData = false;
+
+    // Start loading spinner
+    const spinner = ora({
+      text: chalk.cyan('Thinking'),
+      spinner: 'dots',
+      color: 'cyan',
+    }).start();
 
     // Stream from the AI
     const stream = adapter.stream(allMessages, tools, config.thinkMode, config.thinkBudget);
 
     for await (const event of stream) {
+      // Stop spinner on first data received
+      if (!hasReceivedData) {
+        hasReceivedData = true;
+        spinner.stop();
+      }
+
       switch (event.type) {
         case 'text_delta':
           assistantText += event.delta;
